@@ -1,9 +1,9 @@
 
-name = "ebook-simplicity-scribe"
+name = "ebook-simplicity-scribe-app"
 compatibility_date = "2024-12-14"
 
 [env.production]
-name = "ebook-simplicity-scribe"
+name = "ebook-simplicity-scribe-production"
 
 [[env.production.routes]]
 pattern = "*"
