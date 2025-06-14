@@ -69,12 +69,7 @@ Simply open [Lovable](https://lovable.dev/projects/e38921cd-d832-41c2-9ae0-8da1d
 ### Deploy to Cloudflare Pages
 
 You can easily deploy this project to Cloudflare Pages with one click:
-
-[![Deploy to Cloudflare Pages](https://deploy.workers.cloudflare.com/button)](https://deploy.workers.cloudflare.com/?url=https://github.com/${{ github.repository }})
-
-**Alternative deployment button (works with any repository):**
-
-[![Deploy to Cloudflare Pages](https://deploy.workers.cloudflare.com/button)](https://deploy.workers.cloudflare.com/?url=https://github.com/{{github.repository}})
+[![Deploy to Cloudflare Pages](https://deploy.workers.cloudflare.com/button)](https://deploy.workers.cloudflare.com/?url=https://github.com/${{github.repository}})
 
 **Manual deployment to Cloudflare Pages:**
 
