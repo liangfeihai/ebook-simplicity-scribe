@@ -1,6 +1,5 @@
-
 import JSZip from 'jszip';
-import OpenCC from 'opencc-js';
+import * as OpenCC from 'opencc-js';
 
 export class EpubConverter {
   private converter: any;
