@@ -4,13 +4,13 @@ import { Download } from 'lucide-react';
 
 interface DownloadButtonProps {
   processedFile: Blob | null;
-  originalFileName: string;
+  convertedFileName: string;
   onDownload: () => void;
 }
 
 const DownloadButton: React.FC<DownloadButtonProps> = ({ 
   processedFile, 
-  originalFileName, 
+  convertedFileName, 
   onDownload 
 }) => {
   if (!processedFile) return null;
@@ -19,7 +19,7 @@ const DownloadButton: React.FC<DownloadButtonProps> = ({
     const url = URL.createObjectURL(processedFile);
     const a = document.createElement('a');
     a.href = url;
-    a.download = originalFileName.replace('.epub', '_简体.epub');
+    a.download = convertedFileName;
     document.body.appendChild(a);
     a.click();
     document.body.removeChild(a);
@@ -38,10 +38,10 @@ const DownloadButton: React.FC<DownloadButtonProps> = ({
           className="inline-flex items-center space-x-2 bg-green-600 text-white px-6 py-3 rounded-lg hover:bg-green-700 transition-colors"
         >
           <Download className="w-5 h-5" />
-          <span>下载简体版本</span>
+          <span>下载转换后的文件</span>
         </button>
         <p className="text-xs text-gray-500 mt-3">
-          文件名：{originalFileName.replace('.epub', '_简体.epub')}
+          文件名：{convertedFileName}
         </p>
       </div>
     </div>

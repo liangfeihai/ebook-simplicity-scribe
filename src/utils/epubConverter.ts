@@ -1,15 +1,22 @@
+
 import JSZip from 'jszip';
 import * as OpenCC from 'opencc-js';
 
 export class EpubConverter {
   private converter: any;
+  private conversionType: 'traditional-to-simplified' | 'simplified-to-traditional';
 
-  constructor() {
-    // 初始化繁体转简体转换器
-    this.converter = OpenCC.Converter({ from: 'hk', to: 'cn' });
+  constructor(conversionType: 'traditional-to-simplified' | 'simplified-to-traditional' = 'traditional-to-simplified') {
+    this.conversionType = conversionType;
+    // 根据转换类型初始化不同的转换器
+    if (conversionType === 'traditional-to-simplified') {
+      this.converter = OpenCC.Converter({ from: 'hk', to: 'cn' });
+    } else {
+      this.converter = OpenCC.Converter({ from: 'cn', to: 'hk' });
+    }
   }
 
-  async convertEpubFile(file: File, onProgress: (progress: number, message: string) => void): Promise<Blob> {
+  async convertEpubFile(file: File, onProgress: (progress: number, message: string) => void): Promise<{ blob: Blob, convertedFileName: string }> {
     try {
       onProgress(10, '正在读取EPUB文件...');
       
@@ -54,9 +61,15 @@ export class EpubConverter {
         mimeType: 'application/epub+zip'
       });
       
+      // 转换文件名
+      const convertedFileName = this.convertFileName(file.name);
+      
       onProgress(100, '转换完成！');
       
-      return newEpubBlob;
+      return {
+        blob: newEpubBlob,
+        convertedFileName
+      };
       
     } catch (error) {
       console.error('EPUB转换失败:', error);
@@ -78,6 +91,28 @@ export class EpubConverter {
       console.error('文本转换失败:', error);
       // 如果转换失败，返回原文本
       return text;
+    }
+  }
+
+  private convertFileName(fileName: string): string {
+    try {
+      // 提取文件名和扩展名
+      const lastDotIndex = fileName.lastIndexOf('.');
+      const baseName = fileName.substring(0, lastDotIndex);
+      const extension = fileName.substring(lastDotIndex);
+      
+      // 转换文件名
+      const convertedBaseName = this.converter(baseName);
+      
+      // 添加转换标识
+      const suffix = this.conversionType === 'traditional-to-simplified' ? '_简体' : '_繁體';
+      
+      return `${convertedBaseName}${suffix}${extension}`;
+    } catch (error) {
+      console.error('文件名转换失败:', error);
+      // 如果转换失败，返回原文件名加后缀
+      const suffix = this.conversionType === 'traditional-to-simplified' ? '_简体' : '_繁體';
+      return fileName.replace('.epub', `${suffix}.epub`);
     }
   }
 }

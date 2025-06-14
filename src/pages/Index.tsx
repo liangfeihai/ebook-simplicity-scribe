@@ -1,6 +1,6 @@
 
 import React, { useState, useCallback } from 'react';
-import { BookOpen, Zap, Shield, Download } from 'lucide-react';
+import { BookOpen, Zap, Shield, Download, Mail } from 'lucide-react';
 import FileUpload from '../components/FileUpload';
 import ProcessingProgress from '../components/ProcessingProgress';
 import DownloadButton from '../components/DownloadButton';
@@ -12,15 +12,18 @@ const Index = () => {
   const [progress, setProgress] = useState(0);
   const [progressMessage, setProgressMessage] = useState('');
   const [processedFile, setProcessedFile] = useState<Blob | null>(null);
+  const [convertedFileName, setConvertedFileName] = useState('');
+  const [conversionType, setConversionType] = useState<'traditional-to-simplified' | 'simplified-to-traditional'>('traditional-to-simplified');
 
   const handleFileSelect = useCallback((file: File) => {
     setSelectedFile(file);
     setProcessingStatus('processing');
     setProgress(0);
     setProcessedFile(null);
+    setConvertedFileName('');
     
     // 开始转换
-    const converter = new EpubConverter();
+    const converter = new EpubConverter(conversionType);
     
     converter.convertEpubFile(
       file,
@@ -28,16 +31,17 @@ const Index = () => {
         setProgress(progress);
         setProgressMessage(message);
       }
-    ).then((convertedFile) => {
-      setProcessedFile(convertedFile);
+    ).then((result) => {
+      setProcessedFile(result.blob);
+      setConvertedFileName(result.convertedFileName);
       setProcessingStatus('completed');
-      setProgressMessage('繁体中文已成功转换为简体中文');
+      setProgressMessage('转换完成！');
     }).catch((error) => {
       console.error('转换失败:', error);
       setProcessingStatus('error');
       setProgressMessage(error.message || '转换过程中发生错误');
     });
-  }, []);
+  }, [conversionType]);
 
   const handleDownload = useCallback(() => {
     // 重置状态，允许用户上传新文件
@@ -46,6 +50,7 @@ const Index = () => {
     setProgress(0);
     setProgressMessage('');
     setProcessedFile(null);
+    setConvertedFileName('');
   }, []);
 
   return (
@@ -62,7 +67,7 @@ const Index = () => {
             电子书繁简转换器
           </h1>
           <p className="text-xl text-gray-600 max-w-2xl mx-auto">
-            将EPUB电子书中的繁体中文转换为简体中文，保持原有格式和结构不变
+            将EPUB电子书中的繁体中文转换为简体中文，或将简体中文转换为繁体中文，保持原有格式和结构不变
           </p>
         </div>
 
@@ -93,10 +98,41 @@ const Index = () => {
 
         {/* 主要功能区域 */}
         <div className="max-w-4xl mx-auto space-y-8">
+          {/* 转换类型选择 */}
+          <div className="bg-white rounded-lg shadow-md p-6">
+            <h2 className="text-xl font-semibold text-gray-800 mb-4 text-center">
+              选择转换类型
+            </h2>
+            <div className="flex justify-center space-x-4">
+              <label className="flex items-center space-x-2 cursor-pointer">
+                <input
+                  type="radio"
+                  name="conversionType"
+                  value="traditional-to-simplified"
+                  checked={conversionType === 'traditional-to-simplified'}
+                  onChange={(e) => setConversionType(e.target.value as 'traditional-to-simplified' | 'simplified-to-traditional')}
+                  className="w-4 h-4 text-blue-600"
+                />
+                <span className="text-gray-700">繁体转简体</span>
+              </label>
+              <label className="flex items-center space-x-2 cursor-pointer">
+                <input
+                  type="radio"
+                  name="conversionType"
+                  value="simplified-to-traditional"
+                  checked={conversionType === 'simplified-to-traditional'}
+                  onChange={(e) => setConversionType(e.target.value as 'traditional-to-simplified' | 'simplified-to-traditional')}
+                  className="w-4 h-4 text-blue-600"
+                />
+                <span className="text-gray-700">简体转繁体</span>
+              </label>
+            </div>
+          </div>
+
           {/* 文件上传 */}
           <div className="bg-white rounded-lg shadow-md p-8">
             <h2 className="text-2xl font-semibold text-gray-800 mb-6 text-center">
-              第一步：上传EPUB电子书
+              上传EPUB电子书
             </h2>
             <FileUpload 
               onFileSelect={handleFileSelect}
@@ -114,7 +150,7 @@ const Index = () => {
           {/* 下载按钮 */}
           <DownloadButton
             processedFile={processedFile}
-            originalFileName={selectedFile?.name || ''}
+            convertedFileName={convertedFileName}
             onDownload={handleDownload}
           />
         </div>
@@ -130,18 +166,35 @@ const Index = () => {
                 <h3 className="text-lg font-semibold text-gray-700 mb-3">支持的格式</h3>
                 <ul className="text-gray-600 space-y-2">
                   <li>• EPUB格式电子书</li>
-                  <li>• 包含繁体中文内容</li>
+                  <li>• 包含中文内容</li>
                   <li>• 支持复杂排版</li>
                 </ul>
               </div>
               <div>
                 <h3 className="text-lg font-semibold text-gray-700 mb-3">转换特点</h3>
                 <ul className="text-gray-600 space-y-2">
-                  <li>• 仅转换繁体中文字符</li>
+                  <li>• 支持繁简双向转换</li>
                   <li>• 保持原有格式不变</li>
                   <li>• 页面数量完全一致</li>
+                  <li>• 自动转换文件名</li>
                 </ul>
               </div>
+            </div>
+          </div>
+        </div>
+
+        {/* 联系信息 */}
+        <div className="max-w-4xl mx-auto mt-8">
+          <div className="bg-white rounded-lg shadow-md p-6">
+            <div className="flex items-center justify-center space-x-3">
+              <Mail className="w-5 h-5 text-blue-600" />
+              <span className="text-gray-700">如有任何建议或需要，请联系：</span>
+              <a 
+                href="mailto:leojustry@gmail.com" 
+                className="text-blue-600 hover:text-blue-800 font-medium"
+              >
+                leojustry@gmail.com
+              </a>
             </div>
           </div>
         </div>
