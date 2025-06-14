@@ -1,4 +1,3 @@
-
 import JSZip from 'jszip';
 import * as OpenCC from 'opencc-js';
 
@@ -96,23 +95,19 @@ export class EpubConverter {
 
   private convertFileName(fileName: string): string {
     try {
-      // 提取文件名和扩展名
+      // 直接转换整个文件名（包括扩展名前的部分）
       const lastDotIndex = fileName.lastIndexOf('.');
       const baseName = fileName.substring(0, lastDotIndex);
       const extension = fileName.substring(lastDotIndex);
       
-      // 转换文件名
+      // 转换文件名中的中文字符
       const convertedBaseName = this.converter(baseName);
       
-      // 添加转换标识
-      const suffix = this.conversionType === 'traditional-to-simplified' ? '_简体' : '_繁體';
-      
-      return `${convertedBaseName}${suffix}${extension}`;
+      return `${convertedBaseName}${extension}`;
     } catch (error) {
       console.error('文件名转换失败:', error);
-      // 如果转换失败，返回原文件名加后缀
-      const suffix = this.conversionType === 'traditional-to-simplified' ? '_简体' : '_繁體';
-      return fileName.replace('.epub', `${suffix}.epub`);
+      // 如果转换失败，返回原文件名
+      return fileName;
     }
   }
 }
