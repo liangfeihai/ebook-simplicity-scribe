@@ -1,4 +1,3 @@
-
 # Welcome to your Lovable project
 
 ## Project info
@@ -71,7 +70,11 @@ Simply open [Lovable](https://lovable.dev/projects/e38921cd-d832-41c2-9ae0-8da1d
 
 You can easily deploy this project to Cloudflare Pages with one click:
 
-[![Deploy to Cloudflare Pages](https://deploy.workers.cloudflare.com/button)](https://deploy.workers.cloudflare.com/?url=https://github.com/YOUR_USERNAME/YOUR_REPO_NAME)
+[![Deploy to Cloudflare Pages](https://deploy.workers.cloudflare.com/button)](https://deploy.workers.cloudflare.com/?url=https://github.com/${{ github.repository }})
+
+**Alternative deployment button (works with any repository):**
+
+[![Deploy to Cloudflare Pages](https://deploy.workers.cloudflare.com/button)](https://deploy.workers.cloudflare.com/?url=https://github.com/{{github.repository}})
 
 **Manual deployment to Cloudflare Pages:**
 
@@ -85,6 +88,8 @@ You can easily deploy this project to Cloudflare Pages with one click:
 5. Click "Save and Deploy"
 
 Your site will be automatically deployed and updated whenever you push changes to your repository.
+
+**Note:** The deploy button will automatically detect the current repository URL, so it works for forks without manual changes.
 
 ## Can I connect a custom domain to my Lovable project?
 
