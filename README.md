@@ -1,3 +1,4 @@
+
 # Welcome to your Lovable project
 
 ## Project info
@@ -62,7 +63,28 @@ This project is built with:
 
 ## How can I deploy this project?
 
+### Deploy with Lovable (Recommended)
+
 Simply open [Lovable](https://lovable.dev/projects/e38921cd-d832-41c2-9ae0-8da1d549731d) and click on Share -> Publish.
+
+### Deploy to Cloudflare Pages
+
+You can easily deploy this project to Cloudflare Pages with one click:
+
+[![Deploy to Cloudflare Pages](https://deploy.workers.cloudflare.com/button)](https://deploy.workers.cloudflare.com/?url=https://github.com/YOUR_USERNAME/YOUR_REPO_NAME)
+
+**Manual deployment to Cloudflare Pages:**
+
+1. Log in to your [Cloudflare Dashboard](https://dash.cloudflare.com/)
+2. Go to Pages and click "Create a project"
+3. Connect to your Git provider and select this repository
+4. Use these build settings:
+   - **Build command**: `npm run build`
+   - **Build output directory**: `dist`
+   - **Root directory**: `/` (leave empty)
+5. Click "Save and Deploy"
+
+Your site will be automatically deployed and updated whenever you push changes to your repository.
 
 ## Can I connect a custom domain to my Lovable project?
 
